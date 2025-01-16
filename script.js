@@ -1,31 +1,33 @@
-document.getElementById("rollButton").addEventListener("click", rollRandomVerse);
+const surahName = document.getElementById("surahName");
+const surahNumber = document.getElementById("surahNumber");
+const verseNumber = document.getElementById("verseNumber");
+const verseText = document.getElementById("verseText");
+const verseMeaning = document.getElementById("verseMeaning");
+const verseTransliteration = document.getElementById("verseTransliteration");
+const verseTranslation = document.getElementById("verseTranslation");
+const rollButton = document.getElementById("rollButton");
 
-async function rollRandomVerse() {
-    // Load the quran_en.json data
-    const response = await fetch("quran_en.json");
-    const quranData = await response.json();
+// Event listener for the "Pick a Random Verse" button
+rollButton.addEventListener("click", () => {
+  fetch("quran_en.json")
+    .then((response) => response.json())
+    .then((data) => {
+      const randomSurah = data[Math.floor(Math.random() * data.length)];
+      const randomVerse =
+        randomSurah.verses[
+          Math.floor(Math.random() * randomSurah.verses.length)
+        ];
 
-    // Get random Surah
-    const randomSurahIndex = Math.floor(Math.random() * quranData.length);
-    const randomSurah = quranData[randomSurahIndex];
-    const surahName = randomSurah.name;
-    const chapterNumber = randomSurah.id;
-
-    // Get random Ayah (verse) from the selected Surah
-    const randomAyahIndex = Math.floor(Math.random() * randomSurah.verses.length);
-    const randomAyah = randomSurah.verses[randomAyahIndex];
-    const verseText = randomAyah.text;
-    const verseMeaning = randomAyah.translation; // Use 'translation' for meaning
-
-    // Get the transliteration and translation for the Surah
-    const transliteration = randomSurah.transliteration;
-    const translation = randomSurah.translation;
-
-    // Update HTML with the selected verse details
-    document.getElementById("surahName").textContent = `Surah: ${surahName}`;
-    document.getElementById("verseText").textContent = `Verse: ${verseText}`;
-    document.getElementById("verseMeaning").textContent = `Meaning: ${verseMeaning}`;
-    document.getElementById("chapterNumber").textContent = `Chapter Number: ${chapterNumber}`;
-    document.getElementById("verseTransliteration").textContent = `Transliteration: ${transliteration}`;
-    document.getElementById("verseTranslation").textContent = `Translation: ${translation}`;
-}
+      // Update the DOM with the randomly selected verse details
+      surahName.textContent = `Surah: ${randomSurah.name}`;
+      surahNumber.textContent = `Surah Number: ${randomSurah.id}`;
+      verseNumber.textContent = `Verse Number: ${randomVerse.id}`;
+      verseText.textContent = `Verse: ${randomVerse.text}`;
+      verseMeaning.textContent = `Meaning: ${randomVerse.translation}`;
+      verseTransliteration.textContent = `Transliteration: ${randomSurah.transliteration}`;
+      verseTranslation.textContent = `Translation: ${randomSurah.translation}`;
+    })
+    .catch((error) => {
+      console.error("Error fetching Quran data:", error);
+    });
+});
